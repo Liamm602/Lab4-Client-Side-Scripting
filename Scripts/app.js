@@ -10,9 +10,22 @@
             }
         }
     }
+    //This is a function thats forces the user to have to be loggin in to access this part of the SPA(the task list)
+    function AuthGuardTasks() {
+        let protected_routes = [
+            "task-list"
+        ];
+        if (protected_routes.indexOf(router.ActiveLink) > -1) {
+            if (!sessionStorage.getItem("user")) {
+                router.ActiveLink = "login";
+            }
+        }
+    }
     function LoadLink(link, data = "") {
         router.ActiveLink = link;
         AuthGuard();
+        //calling the authgaurdtask method when a link is being processed
+        AuthGuardTasks();
         router.LinkData = data;
         history.pushState({}, "", router.ActiveLink);
         document.title = router.ActiveLink.substring(0, 1).toUpperCase() + router.ActiveLink.substring(1);
@@ -219,14 +232,22 @@
         }
     }
     function CheckLogin() {
+        //retrieving the id of the tasklist a tag of the navbar
+        let tasklistnav = $("#tasklist");
         if (sessionStorage.getItem("user")) {
             $("#login").html(`<a id="logout" class="nav-link" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>`);
+            //if user is logged in show the tasklist in the navbar
+            tasklistnav.show();
             $("#logout").on("click", function () {
                 sessionStorage.clear();
                 $("#login").html(`<a class="nav-link" data="login"><i class="fas fa-sign-in-alt"></i> Login</a>`);
                 AddNavigationEvents();
                 LoadLink("login");
             });
+        }
+        else{
+            //hide tasklist in navbar if CheckLogin does not detect any key named user in the session storage
+          
         }
     }
     function DisplayLoginPage() {
@@ -328,6 +349,7 @@
             case "login": return DisplayLoginPage;
             case "register": return DisplayRegisterPage;
             case "404": return Display404Page;
+            //routing the tasklist with the displaytasklist function
             case "task-list": return DisplayTaskList;
            
             default:
