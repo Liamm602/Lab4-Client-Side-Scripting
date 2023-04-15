@@ -10,22 +10,9 @@
             }
         }
     }
-    //This is a function thats forces the user to have to be loggin in to access this part of the SPA(the task list)
-    function AuthGuardTasks() {
-        let protected_routes = [
-            "task-list"
-        ];
-        if (protected_routes.indexOf(router.ActiveLink) > -1) {
-            if (!sessionStorage.getItem("user")) {
-                router.ActiveLink = "login";
-            }
-        }
-    }
     function LoadLink(link, data = "") {
         router.ActiveLink = link;
         AuthGuard();
-        //calling the authgaurdtask method when a link is being processed
-        AuthGuardTasks();
         router.LinkData = data;
         history.pushState({}, "", router.ActiveLink);
         document.title = router.ActiveLink.substring(0, 1).toUpperCase() + router.ActiveLink.substring(1);
@@ -104,7 +91,6 @@
     function DisplayAboutPage() {
         console.log("About Page");
     }
-  
     function AddContact(fullName, contactNumber, emailAddress) {
         let contact = new core.Contact(fullName, contactNumber, emailAddress);
         if (contact.serialize()) {
@@ -232,22 +218,14 @@
         }
     }
     function CheckLogin() {
-        //retrieving the id of the tasklist a tag of the navbar
-        let tasklistnav = $("#tasklist");
         if (sessionStorage.getItem("user")) {
             $("#login").html(`<a id="logout" class="nav-link" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>`);
-            //if user is logged in show the tasklist in the navbar
-            tasklistnav.show();
             $("#logout").on("click", function () {
                 sessionStorage.clear();
                 $("#login").html(`<a class="nav-link" data="login"><i class="fas fa-sign-in-alt"></i> Login</a>`);
                 AddNavigationEvents();
                 LoadLink("login");
             });
-        }
-        else{
-            //hide tasklist in navbar if CheckLogin does not detect any key named user in the session storage
-          
         }
     }
     function DisplayLoginPage() {
@@ -290,51 +268,66 @@
     }
     function Display404Page() {
     }
-
-    function DisplayTaskList()
-    {
+    function AddNewTask() {
         let messageArea = $("#messageArea");
         messageArea.hide();
         let taskInput = $("#taskTextInput");
-
-        // add a new Task to the Task List
-        $("#newTaskButton").on("click", function()
-        {         
+        let taskInputValue = taskInput.val();
+        if (taskInput.val() != "" && taskInputValue.charAt(0) != " ") {
+            let newElement = `
+               <li class="list-group-item" id="task">
+               <span id="taskText">${taskInput.val()}</span>
+               <span class="float-end">
+                   <button class="btn btn-outline-primary btn-sm editButton"><i class="fas fa-edit"></i>
+                   <button class="btn btn-outline-danger btn-sm deleteButton"><i class="fas fa-trash-alt"></i></button>
+               </span>
+               <input type="text" class="form-control edit-task editTextInput">
+               </li>
+               `;
+            $("#taskList").append(newElement);
+            messageArea.removeAttr("class").hide();
+            taskInput.val("");
+        }
+        else {
+            taskInput.trigger("focus").trigger("select");
+            messageArea.show().addClass("alert alert-danger").text("Please enter a valid Task.");
+        }
+    }
+    function DisplayTaskList() {
+        let messageArea = $("#messageArea");
+        messageArea.hide();
+        let taskInput = $("#taskTextInput");
+        $("#newTaskButton").on("click", function () {
             AddNewTask();
         });
-
-        taskInput.on("keypress", function(event)
-        {
-          if(event.key == "Enter")
-          {
-            AddNewTask();
-          }
-         });
-
-        // Edit an Item in the Task List
-        $("ul").on("click", ".editButton", function()
-        {
-           let editText = $(this).parent().parent().children(".editTextInput");
-           let text = $(this).parent().parent().text();
-           let editTextValue = editText.val();
-           editText.val(text).show().trigger("select");
-           editText.on("keypress", function(event)
-           {
-            if(event.key == "Enter")
-            {
-              if(editText.val() != "" && editTextValue.charAt(0) != " ")
-              {
-                editText.hide();
-                $(this).parent().children("#taskText").text(editTextValue);
-                messageArea.removeAttr("class").hide();
-              }
-              else
-              {
-                editText.trigger("focus").trigger("select");
-                messageArea.show().addClass("alert alert-danger").text("Please enter a valid Task.");
-              }
+        taskInput.on("keypress", function (event) {
+            if (event.key == "Enter") {
+                AddNewTask();
             }
-           });
+        });
+        $("ul").on("click", ".editButton", function () {
+            let editText = $(this).parent().parent().children(".editTextInput");
+            let text = $(this).parent().parent().text();
+            let editTextValue = editText.val();
+            editText.val(text).show().trigger("select");
+            editText.on("keypress", function (event) {
+                if (event.key == "Enter") {
+                    if (editText.val() != "" && editTextValue.charAt(0) != " ") {
+                        editText.hide();
+                        $(this).parent().children("#taskText").text(editTextValue);
+                        messageArea.removeAttr("class").hide();
+                    }
+                    else {
+                        editText.trigger("focus").trigger("select");
+                        messageArea.show().addClass("alert alert-danger").text("Please enter a valid Task.");
+                    }
+                }
+            });
+        });
+        $("ul").on("click", ".deleteButton", function () {
+            if (confirm("Are you sure?")) {
+                $(this).closest("li").remove();
+            }
         });
     }
     function ActiveLinkCallBack() {
@@ -349,9 +342,6 @@
             case "login": return DisplayLoginPage;
             case "register": return DisplayRegisterPage;
             case "404": return Display404Page;
-            //routing the tasklist with the displaytasklist function
-            case "task-list": return DisplayTaskList;
-           
             default:
                 console.error("ERROR: callback does not exist: " + router.ActiveLink);
                 return new Function();
@@ -364,6 +354,5 @@
         LoadFooter();
     }
     window.addEventListener("load", Start);
-
 })();
 //# sourceMappingURL=app.js.map

@@ -56,7 +56,6 @@ router.AddTable([
     "/register",
     "/login",
     "/edit",
-    //routing the task-list link into the array routes
     "/task-list"
 ]);
 let route = location.pathname;
