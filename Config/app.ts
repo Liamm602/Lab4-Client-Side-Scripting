@@ -4,13 +4,13 @@ import path from 'path'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
 
-import indexRouter from './Routes/index'
-import userRouter from './Routes/users'
+import indexRouter from '../Routes/index'
+import userRouter from '../Routes/users'
 
 const app = express()
 
 // view engine
-app.set('views', path.join(__dirname, 'Views'))
+app.set('views', path.join(__dirname, '/Views'))
 app.set('view engine', 'ejs')
 
 // express settings
@@ -18,7 +18,7 @@ app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
-app.use(express.static(path.join(__dirname, 'Client')))
+app.use(express.static(path.join(__dirname, '/Client')))
 app.use(express.static(path.join(__dirname, 'node_modules')))
 
 // express routes
