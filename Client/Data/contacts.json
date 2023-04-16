@@ -1,0 +1,21 @@
+{
+    "contacts":
+    [
+        {
+            "DisplayName": "Tanjiro Kamado",
+            "Contact Number" : "9053423425",
+            "EmailAddress": "peak@peak.com"
+        },
+
+        {
+            "DisplayName": "Bob Tree",
+            "Contact Number" : "9056536754",
+            "EmailAddress": "Bobtree@gmail.com"
+        },
+        {
+            "DisplayName": "James Tilian",
+            "Contact Number" : "9051256587",
+            "EmailAddress": "James345@gmail.com"
+        }
+    ]
+}

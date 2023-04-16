@@ -209,7 +209,8 @@
 
         ContactFormValidation();
 
-        let page = router.LinkData;
+        let page = location.hash.substring(1)
+        console.log(page);
 
         switch(page)
         {
