@@ -1,32 +1,53 @@
+import app from './app'
+import debug from 'debug'
+debug('temp:server')
 import http from 'http'
-import fs from 'fs'
-import mime from 'mime-types'
-const hostname = '127.0.0.1';
-const port = process.env.PORT || 3000;
-let lookup = mime.lookup
-const server = http.createServer((req, res) => {
-  let path = req.url as string
+import { HttpError } from 'http-errors'
 
-  if (path == "/" || path == "/home") {
-    path = "/index.html"
-  }
-let mimeType = lookup(path.substring(1)) as string
+// Normalize port into a number, string, or false
+const normalizePort = (val: string) => {
+    const port = parseInt(val, 10)
 
-fs.readFile(__dirname + path, (err, data) => {
-if(err){
-    res.writeHead(404)
-    res.end("ERROR 404 - File not found!" + err.message)
-    return
+    if (isNaN(port)) return val
+
+    if (port >= 0) return port
+
+    return false
 }
-res.setHeader("X-Content-Type-Options", "nosniff")// security
-res.writeHead(200, {
-    "Content-type" : mimeType
-}) 
-res.end(data)
-}
-)
-});
 
-server.listen(port, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+const port = normalizePort(process.env.PORT || '3011') as number
+app.set('port', port)
+
+// Event listening for HTTP server 'error' event
+const onError = (error: HttpError) => {
+    if (error.syscall !== 'listen') throw error
+
+    const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port
+
+    // handle specific listen errors with custom messages
+    switch(error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1)
+            break
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1)
+            break
+        default:
+            throw error
+    }
+}
+
+// listener
+const onListening = () => {
+    let addr = server.address()
+    let bind = 'pipe ' + addr
+    debug('Listening on ' + bind)
+}
+
+// Start our server
+const server = http.createServer(app)
+server.listen(port)
+server.on('error', onError)
+server.on('listening', onListening)
