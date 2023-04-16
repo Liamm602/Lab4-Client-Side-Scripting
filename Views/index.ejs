@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title><%= title %></title>
     <!-- CSS Section -->
     <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="./node_modules/@fortawesome/fontawesome-free/css/all.min.css">
@@ -16,21 +16,30 @@
     <script src="./Scripts/user.js"></script>
     <script src="./Scripts/contact.js"></script>
     <script src="./Scripts/project.js" ></script>
+    <script src="./Scripts/app.js"></script>
 </head>
-<body>
+<body id="<%= page %>">
     <!-- Main Header -->
-    <header></header>
+    <header>
+        <divid id="navbarSupportedContent"></div>
+            <%- include('./components/header') %>
+    </header>
 
     <!-- Main Content -->
-    <main class="container"></main>
+    <main class="container">
+        <h1> title %></h1>
+        <%- include('./content' + page)%>
+    </main>
     
     <!-- Footer -->
-    <footer></footer>
+    <footer>
+        <%- include('./components/footer')%>
+    </footer>
 
     <!-- Scripts that will run after the content loads -->
     <script src="./node_modules/jquery/dist/jquery.min.js"></script>
     <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 
-    <script src="./Scripts/app.js"></script>
+  
 
 </html>

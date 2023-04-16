@@ -5,151 +5,37 @@
     function AuthGuard(): void
     {
         let protected_routes: string[] = [
-            "contact-list"
+            "/contact-list",
+            "/edit"
         ];
     
     
-        if(protected_routes.indexOf(router.ActiveLink) > -1)
+        if(protected_routes.indexOf(location.pathname) > -1)
         {
             // check if user is logged in
             if(!sessionStorage.getItem("user"))
             {
                 // if not...change the active link to the  login page
-                router.ActiveLink = "login"
+                location.href = "/login"
             }
         }
     }
     
-    function LoadLink(link: string, data: string = ""): void
-    {
-        router.ActiveLink = link;
+   
+   
 
-        AuthGuard();
-
-        router.LinkData = data;
-        history.pushState({}, "", router.ActiveLink);
-        
-        // capitalize active link and set document title to it
-        document.title = router.ActiveLink.substring(0, 1).toUpperCase() + router.ActiveLink.substring(1);
-
-        // remove all active Nav Links
-        $("ul>li>a").each(function()
-        {
-            $(this).removeClass("active");
-        });
-
-        $(`li>a:contains(${document.title})`).addClass("active"); // updates the Active link on Navigation items
-
-        CheckLogin();
-
-        LoadContent();
-    }
-
-    function AddNavigationEvents(): void
-    {
-
-        let NavLinks = $("ul>li>a"); // find all Navigation Links
-
-        NavLinks.off("click");
-        NavLinks.off("mouseover");
-
-        // loop through each Navigation link and load appropriate content on click
-        NavLinks.on("click", function()
-        {
-            LoadLink($(this).attr("data") as string);
-        });
-
-        NavLinks.on("mouseover", function()
-        {
-            $(this).css("cursor", "pointer");
-        });
-    }
-
-    function AddLinkEvents(link: string): void
-    {
-        let linkQuery = $(`a.link[data=${link}]`);
-        // remove all link events
-        linkQuery.off("click");
-        linkQuery.off("mouseover");
-        linkQuery.off("mouseout");
-
-        // css adjustments for links
-        linkQuery.css("text-decoration", "underline");
-        linkQuery.css("color", "blue");
-
-        // add link events
-        linkQuery.on("click", function()
-        {
-            LoadLink(`${link}`);
-        });
-
-        linkQuery.on("mouseover", function()
-        {
-            $(this).css('cursor', 'pointer');
-            $(this).css('font-weight', 'bold');
-        });
-
-        linkQuery.on("mouseout", function()
-        {
-            $(this).css('font-weight', 'normal');
-        });
-    }
-
-    /**
-     * This function loads the header.html content into a page
-     *
-     * @returns {void}
-     */
-    function LoadHeader(): void
-    {
-        // use AJAX to load the header content
-        $.get("./Views/components/header.html", function(html_data)
-        {
-            // inject Header content into the page
-            $("header").html(html_data);
-
-            AddNavigationEvents();
-            
-            CheckLogin();
-        });
-    }
-
-    /**
-     * 
-     * 
-     * @returns {void}
-     */
-    function LoadContent(): void
-    {
-        let page_name = router.ActiveLink; // alias for the Active Link
-        let callback = ActiveLinkCallBack();
-        // returns a reference to the correct function
-        $.get(`./Views/content/${page_name}.html`, function(html_date)
-        {
-            $("main").html(html_date);
-            callback(); // calling the correct function 
-        });
     
-    }
 
-    /**
-     *
-     * @returns {void}
-     */
-    function LoadFooter(): void
-    {
-        $.get(`./Views/components/footer.html`, function(html_date)
-        {
-            $("footer").html(html_date);
-        });
-    }
+  
+  
 
+   
     function DisplayHomePage(): void
     {
         console.log("Home Page");
         $("#AboutUsButton").on("click", () => 
         {
-            LoadLink("about");
+            location.href='/about'
         });
     
         $("main").append(`<p id="MainParagraph" class="mt-3">This is the Main Paragraph</p>`);
@@ -231,7 +117,7 @@
         $("a[data='contact-list']").off("click");
         $("a[data='contact-list']").on("click", function()
         {
-            LoadLink("contact-list");
+            location.href='contact-list'
         });
 
         ContactFormValidation();
@@ -299,18 +185,18 @@
                 {
                     localStorage.removeItem($(this).val() as string)
                 }
-                LoadLink("contact-list");
+                location.href='contact-list'
             });
 
             $("button.edit").on("click", function()
             {
-                LoadLink("edit", $(this).val() as string);
+                location.href="edit", $(this).val() as string;
             });
         }
 
         $("#addButton").on("click", ()=>
         {
-            LoadLink("edit", "add");
+            location.href='edit', "add";
         });
     }
 
@@ -342,12 +228,12 @@
                         let emailAddress = document.forms[0].emailAddress.value;
 
                         AddContact(fullName, contactNumber, emailAddress);
-                        LoadLink("contact-list");
+                        location.href='contact-list'
                     });
 
                     $("#cancelButton").on("click", () =>
                     {
-                        LoadLink("contact-list");
+                        location.href='contact-list'
                     });
                 }
                 break;
@@ -374,12 +260,12 @@
                         // replace the item in local storage
                         localStorage.setItem(page, contact.serialize() as string);
                         // go back to the contact list page (refresh)
-                        LoadLink("contact-list");
+                        location.href='contact-list'
                     });
 
                     $("#cancelButton").on("click", () =>
                     {
-                        LoadLink("contact-list");
+                        location.href='contact-list'
                     });
                     
                 }
@@ -404,13 +290,13 @@
 
                  // swap out the logout link for login
                 $("#login").html(
-                    `<a class="nav-link" data="login"><i class="fas fa-sign-in-alt"></i> Login</a>`
+                    `<a class="nav-link" data="login" href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>`
                 );
 
-                AddNavigationEvents();
+                
 
                 // redirect back to login
-                LoadLink("login");
+                location.href='/login'
             });
         }
     }
@@ -421,7 +307,7 @@
         let messageArea =  $("#messageArea");
         messageArea.hide();
 
-        AddLinkEvents("register");
+        
 
         $("#loginButton").on("click", function()
         {
@@ -458,7 +344,7 @@
                     messageArea.removeAttr("class").hide();
 
                     // redirect the user to the secure area of our site - contact-list.html
-                    LoadLink("contact-list");
+                    location.href='contact-list'
                 }
                 // else if bad credentials were entered...
                 else
@@ -476,7 +362,7 @@
             document.forms[0].reset();
 
             // return to the home page
-            LoadLink("home");
+            location.href='home'
         });
     }
 
@@ -484,7 +370,7 @@
     {
         console.log("Register Page");
 
-        AddLinkEvents("login");
+       
     }
 
     function Display404Page(): void
@@ -584,33 +470,7 @@
          });
      }
 
-    /**
-     * This method returns the appropriate function callback relative to the Active Link
-     *
-     * @returns {Function}
-     */
 
- 
-    function ActiveLinkCallBack(): Function
-    {
-        switch(router.ActiveLink)
-        {
-            case "home": return DisplayHomePage;
-            case "about": return DisplayAboutPage;
-            case "products": return DisplayProductsPage;
-            case "services": return DisplayServicesPage;
-            case "contact": return DisplayContactPage;
-            case "contact-list": return DisplayContactListPage;
-            case "edit": return DisplayEditPage;
-            case "login": return DisplayLoginPage;
-            case "register": return DisplayRegisterPage;
-            case "404": return Display404Page;
-          
-            default:
-                console.error("ERROR: callback does not exist: " + router.ActiveLink);
-                return new Function();
-        }
-    }
 
     // named function option
 
@@ -620,14 +480,36 @@
      */
     function Start(): void
     {
-        console.log("App Started!");
+        let pageId =  $('body')[0].getAttribute('id')
 
-        LoadHeader();
-
-        LoadLink("home");
-
-        LoadFooter();
+        CheckLogin()
+        switch (pageId) {
+            case "home":  
+            DisplayHomePage;
+            case "about":  
+            DisplayAboutPage;
+            case "products": 
+             DisplayProductsPage;
+            case "services": 
+             DisplayServicesPage;
+            case "contact": 
+             DisplayContactPage;
+            case "contact-list": 
+            AuthGuard()
+             DisplayContactListPage;
+            case "edit": 
+            AuthGuard()
+            DisplayEditPage;
+            case "login": 
+            DisplayLoginPage;
+            case "register": 
+             DisplayRegisterPage;
+            case "404": 
+            Display404Page;
+         
+               
     }
+}
 
     window.addEventListener("load", Start);
 
