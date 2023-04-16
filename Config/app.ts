@@ -3,12 +3,23 @@ import express, { NextFunction } from 'express'
 import path from 'path'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
-
+import mongoose from 'mongoose'
 import indexRouter from '../Routes/index'
 import userRouter from '../Routes/users'
 
 const app = express()
+//db configuaerion
+import * as DBConfig from './db'
+mongoose.connect(DBConfig.LocalURI)
 
+const db = mongoose.connection // alias
+db.on("error", function()
+{
+    console.error("Connection Error!")
+})
+db.once("open", function(){
+    console.log(`Connected to MongoDb at ${DBConfig.HostName}`)
+})
 // view engine
 app.set('views', path.join(__dirname, '/Views'))
 app.set('view engine', 'ejs')
