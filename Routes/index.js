@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
+const contact_1 = __importDefault(require("../Models/contact"));
 router.get('/', (req, res, next) => {
     res.render('index', { title: 'Home', page: 'home', displayName: '' });
 });
@@ -23,8 +24,15 @@ router.get('/login', (req, res, next) => {
 router.get('/register', (req, res, next) => {
     res.render('index', { title: 'Register', page: 'register', displayName: '' });
 });
-router.get('/contact-list', (req, res, next) => {
-    res.render('index', { title: 'Contact-List', page: 'contact-list', displayName: '' });
+router.get('/contact-list', function (req, res, next) {
+    contact_1.default.find(function (err, contacts) {
+        if (err) {
+            console.error("Encountered an Error reading from the database " + err.message);
+            res.end();
+        }
+        console.log(contacts);
+        res.render('index', { title: 'Contact-List', page: 'contact-list', contacts: contacts, displayName: '' });
+    });
 });
 router.get('/edit', (req, res, next) => {
     res.render('index', { title: 'Edit Contact', page: 'edit', displayName: '' });

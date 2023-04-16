@@ -1,6 +1,6 @@
 import express from 'express'
 const router = express.Router()
-
+import Contact from "../Models/contact";
 // GET home page
 router.get('/', (req, res, next) => {
     res.render('index', { title: 'Home', page: 'home', displayName: '' })
@@ -31,8 +31,19 @@ router.get('/register', (req, res, next) => {
 
 // Temp Routes
 // GET contact-list
-router.get('/contact-list', (req, res, next) => {
-    res.render('index', { title: 'Contact-List', page: 'contact-list', displayName: '' })
+
+router.get('/contact-list', function(req, res, next) {
+    Contact.find(function(err: any, contacts: any)
+    {
+        if(err)
+        {
+            console.error("Encountered an Error reading from the database " + err.message);
+            res.end();
+        }
+        console.log(contacts);
+        res.render('index', { title: 'Contact-List', page: 'contact-list',contacts:contacts, displayName: '' })
+    })
+   
 })
 //GET edit
 router.get('/edit', (req, res, next) => {
