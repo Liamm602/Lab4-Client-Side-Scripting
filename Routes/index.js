@@ -21,7 +21,20 @@ router.get('/contact', (req, res, next) => {
 router.get('/login', (req, res, next) => {
     res.render('index', { title: 'Login', page: 'login', displayName: '' });
 });
-router.get('/register', (req, res, next) => {
+router.get('/register', function (req, res, next) {
+    let newContact = new contact_1.default({
+        "FullName": req.body.FullName,
+        "ContactNumber": req.body.ContactNumber,
+        "EmailAddress": req.body.EmailAddress,
+    });
+    contact_1.default.create(newContact, function (err, ErrorCallback) { });
+    {
+        if (err) {
+            console.error(err);
+            res.end(err);
+        }
+        res.redirect('/contact-list');
+    }
     res.render('index', { title: 'Register', page: 'register', displayName: '' });
 });
 router.get('/contact-list', function (req, res, next) {

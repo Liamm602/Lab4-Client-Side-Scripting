@@ -25,7 +25,24 @@ router.get('/login', (req, res, next) => {
 })
 
 // GET register
-router.get('/register', (req, res, next) => {
+router.get('/register', function(req, res, next)  {
+    let newContact = new Contact
+    ({
+        "FullName": req.body.FullName,
+        "ContactNumber": req.body.ContactNumber,
+        "EmailAddress": req.body.EmailAddress,
+    })
+
+    Contact.create(newContact, function(err, ErrorCallback))
+    {
+        if(err)
+        {
+            console.error(err);
+            res.end(err);
+        }
+        res.redirect('/contact-list')
+    }
+
     res.render('index', { title: 'Register', page: 'register', displayName: '' })
 })
 
