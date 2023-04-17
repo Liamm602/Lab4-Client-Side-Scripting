@@ -46,9 +46,19 @@ router.get('/contact-list', function(req, res, next) {
    
 })
 //GET edit
-router.get('/edit', (req, res, next) => {
+router.get('/edit/:id', function(req, res, next) {
+    let id = req.params.id;
+
+    Contact.findById(id, {}, {}, function(_err:any,_contactToEdit: any))
+    {
+        if(_err)
+        {
+            console.error(_err);
+            res.end(_err);
+        }
+    }
     res.render('index', { title: 'Edit Contact', page: 'edit', displayName: '' })
-})
+});
 
 //GET edit
 router.get('/about', (req, res, next) => {

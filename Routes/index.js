@@ -34,7 +34,15 @@ router.get('/contact-list', function (req, res, next) {
         res.render('index', { title: 'Contact-List', page: 'contact-list', contacts: contacts, displayName: '' });
     });
 });
-router.get('/edit', (req, res, next) => {
+router.get('/edit/:id', function (req, res, next) {
+    let id = req.params.id;
+    contact_1.default.findById(id, {}, {}, );
+    {
+        if (_err) {
+            console.error(_err);
+            res.end(_err);
+        }
+    }
     res.render('index', { title: 'Edit Contact', page: 'edit', displayName: '' });
 });
 router.get('/about', (req, res, next) => {
