@@ -67,5 +67,16 @@ router.get('/task-list', (req, res, next) => {
 router.get('/404', (req, res, next) => {
     res.render('index', { title: '404', page: '404', displayName: '' });
 });
+router.get('/delete/:id', function (req, res, next) {
+    let id = req.params.id;
+    contact_1.default.removeAllListeners({ _id: id }, function (err) { });
+    {
+        if (err) {
+            console.error(err);
+            res.end(err);
+        }
+    }
+    res.render('index', { title: '404', page: '404', displayName: '' });
+});
 exports.default = router;
 //# sourceMappingURL=index.js.map

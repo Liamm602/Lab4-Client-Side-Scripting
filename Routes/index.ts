@@ -89,4 +89,19 @@ router.get('/404', (req, res, next) => {
     res.render('index', { title: '404', page: '404', displayName: '' })
 })
 
+router.get('/delete/:id', function(req, res, next)  {
+
+    let id = req.params.id;
+
+    Contact.removeAllListeners({_id: id}, function(err))
+    {
+        if(err){
+            console.error(err)
+            res.end(err)
+        }
+    }
+
+    res.render('index', { title: '404', page: '404', displayName: '' })
+})
+
 export default router
