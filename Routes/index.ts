@@ -66,6 +66,23 @@ router.get('/contact-list', function(req, res, next) {
 router.get('/edit/:id', function(req, res, next) {
     let id = req.params.id;
 
+    let updateContact = new Contact
+    ({
+        "_id": id,
+        "FullName": req.body.ContactNumber,
+        "EmailAddress": req.body.EmailAddress
+
+    })
+
+    Contact.update({_id:id}, updateContact, function(err: any, _contactToEdit: any){
+        if(err)
+        {
+            console.error(err)
+            res.end(err)
+            
+        }
+    })
+
     Contact.findById(id, {}, {}, function(_err:any,_contactToEdit: any))
     {
         if(_err)

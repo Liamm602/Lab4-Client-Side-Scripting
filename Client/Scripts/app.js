@@ -79,6 +79,12 @@
     }
     function DisplayContactListPage() {
         console.log("Contact-list Page");
+        $("a.delete").on("click", function () { });
+        {
+            if (!confirm("Are you sure?")) {
+                location.href = "/contact-list";
+            }
+        }
     }
     function DisplayEditPage() {
         console.log("Edit Page");

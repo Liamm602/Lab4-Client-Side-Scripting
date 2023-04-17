@@ -171,6 +171,14 @@
         $("#addButton").on("click", () => {
             location.href = 'edit', "add";
         }); */
+
+        $("a.delete").on("click", function())
+        {
+            if(!confirm("Are you sure?"))
+            {
+                location.href = "/contact-list";
+            }
+        }
     }
 
     /**

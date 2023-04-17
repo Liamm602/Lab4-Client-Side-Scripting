@@ -49,6 +49,17 @@ router.get('/contact-list', function (req, res, next) {
 });
 router.get('/edit/:id', function (req, res, next) {
     let id = req.params.id;
+    let updateContact = new contact_1.default({
+        "_id": id,
+        "FullName": req.body.ContactNumber,
+        "EmailAddress": req.body.EmailAddress
+    });
+    contact_1.default.update({ _id: id }, updateContact, function (err, _contactToEdit) {
+        if (err) {
+            console.error(err);
+            res.end(err);
+        }
+    });
     contact_1.default.findById(id, {}, {}, );
     {
         if (_err) {
